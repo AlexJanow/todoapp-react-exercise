@@ -4,10 +4,16 @@ import { useState } from "react";
 function App() {
   const [todoItems, setTodoItems] = useState([]);
 
+  // RENDER LIST
   function renderTodoItems() {
     const liItems = todoItems.map((todoItem) => {
       return (
-        <TodoItem key={todoItem} name={todoItem} onClick={handleClickTodo} />
+        <TodoItem
+          key={todoItem}
+          name={todoItem}
+          onClick={handleClickTodo}
+          // onDelete={onDeleteTodoItem}
+        />
       );
     });
     return liItems;
@@ -17,6 +23,9 @@ function App() {
     const newTodos = todoItems.filter((todoItem) => todoItem !== clickedTodo);
     setTodoItems(newTodos);
   }
+  // function onDeleteTodoItem(clickedDelete) {
+
+  // }
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -32,22 +41,33 @@ function App() {
     function handleClick() {
       onClick(name);
     }
-    return <li onClick={handleClick}>{name}</li>;
+    return (
+      <li className="liItem">
+        <button className="TodoItem__delete" onClick={handleClick}>
+          x
+        </button>
+        {name}
+        <button className="TodoItem__toggle">done</button>
+      </li>
+    );
   }
 
   return (
     <div className="App">
-      <h1>Todo List</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="add todo"
-          name="todoItemName"
-          id="todoItemName"
-          required
-        />
-        <button type="submit"> Add</button>
-      </form>
+      <header className="Header">
+        <h1>Todo List</h1>
+
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="add todo"
+            name="todoItemName"
+            id="todoItemName"
+            required
+          />
+          <button type="submit"> Add</button>
+        </form>
+      </header>
       <ul>{renderTodoItems()}</ul>
     </div>
   );
