@@ -2,58 +2,124 @@ import "./App.css";
 import { useState } from "react";
 
 function App() {
-  const [todoItems, setTodoItems] = useState([]);
+  const seedTasks = [
+    {
+      task: "Do This!",
+      status: "done",
+    },
+    {
+      task: "Do That!",
+      status: "pending",
+    },
+    {
+      task: "Listen to Yoda!",
+      status: "pending",
+    },
+    {
+      task: "Don't walk the dark path!",
+      status: "pending",
+    },
+    {
+      task: "Get some sleep!",
+      status: "pending",
+    },
+  ];
+
+  const [todoItems, setTodoItems] = useState(seedTasks);
 
   // RENDER LIST
-  function renderTodoItems() {
-    const liItems = todoItems.map((todoItem) => {
-      return (
-        <TodoItem
-          key={todoItem}
-          name={todoItem}
-          onClick={handleClickTodo}
-          // onDelete={onDeleteTodoItem}
-        />
-      );
-    });
+  function renderTodoItemsPending() {
+    const liItems = todoItems
+      .filter((todoItem) => {
+        return todoItem.status === "pending";
+      })
+      .map((todoItem) => {
+        return (
+          <TodoItem
+            key={todoItem.task}
+            task={todoItem}
+            name={todoItem.task}
+            onRemove={handleClickTodo}
+            onToggle={handleToggle}
+          />
+        );
+      });
+    return liItems;
+  }
+  function renderTodoItemsDone() {
+    const liItems = todoItems
+      .filter((todoItem) => {
+        return todoItem.status === "done";
+      })
+      .map((todoItem) => {
+        return (
+          <TodoItem
+            key={todoItem.task}
+            task={todoItem}
+            name={todoItem.task}
+            onRemove={handleClickTodo}
+            onToggle={handleToggle}
+          />
+        );
+      });
     return liItems;
   }
 
   function handleClickTodo(clickedTodo) {
-    const newTodos = todoItems.filter((todoItem) => todoItem !== clickedTodo);
+    const newTodos = todoItems.filter(
+      (todoItem) => todoItem.task !== clickedTodo.task
+    );
     setTodoItems(newTodos);
   }
-  // function onDeleteTodoItem(clickedDelete) {
-
-  // }
+  function handleToggle(clickedTodo) {
+    const newTodos = todoItems.map((todoItem) => {
+      if (todoItem.task === clickedTodo.task) {
+        if (clickedTodo.status === "pending") {
+          todoItem.status = "done";
+        } else {
+          todoItem.status = "pending";
+        }
+      }
+      return todoItem;
+    });
+    setTodoItems(newTodos);
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
     const form = event.target;
-    const newTodoItem = form.todoItemName.value;
+    const newTodoItem = {
+      task: form.todoItemName.value,
+      status: "pending",
+    };
 
     const newTodoItems = [...todoItems, newTodoItem];
     setTodoItems(newTodoItems);
     form.reset();
   }
 
-  function TodoItem({ name, onClick }) {
-    function handleClick() {
-      onClick(name);
+  function TodoItem({ task, name, onRemove, onToggle }) {
+    function handleRemove() {
+      onRemove(task);
+    }
+    function handleToggle() {
+      onToggle(task);
     }
     return (
       <li className="liItem">
-        <button className="TodoItem__delete" onClick={handleClick}>
+        <button className="TodoItem__delete" onClick={handleRemove}>
           x
         </button>
-        {name}
-        <button className="TodoItem__toggle">done</button>
+        {task.task}
+        <button className="TodoItem__toggle" onClick={handleToggle}>
+          {task.status === "pending" ? "done" : "do it "}
+        </button>
       </li>
     );
   }
 
-  return (
-    <div className="App">
+  function Header() {
+    return (
       <header className="Header">
         <h1>Todo List</h1>
 
@@ -68,7 +134,14 @@ function App() {
           <button type="submit"> Add</button>
         </form>
       </header>
-      <ul>{renderTodoItems()}</ul>
+    );
+  }
+
+  return (
+    <div className="App">
+      <Header />
+      <ul>{renderTodoItemsPending()}</ul>
+      <ul className="ItemsDone">{renderTodoItemsDone()}</ul>
     </div>
   );
 }

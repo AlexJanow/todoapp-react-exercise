@@ -45,3 +45,7 @@
   cursor: pointer;
   margin-left: 10%;
 }
+
+.ItemsDone li {
+  background-color: grey;
+}
