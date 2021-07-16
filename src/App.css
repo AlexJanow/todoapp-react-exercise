@@ -49,3 +49,15 @@
 .ItemsDone li {
   background-color: grey;
 }
+
+.TodoItem__submitForm {
+  padding: 3%;
+}
+
+.hidden {
+  display: none;
+}
+
+.show {
+  display: block;
+}

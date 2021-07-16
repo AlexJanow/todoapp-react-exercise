@@ -41,6 +41,7 @@ function App() {
             name={todoItem.task}
             onRemove={handleClickTodo}
             onToggle={handleToggle}
+            onEdit={handleEdit}
           />
         );
       });
@@ -59,6 +60,7 @@ function App() {
             name={todoItem.task}
             onRemove={handleClickTodo}
             onToggle={handleToggle}
+            onEdit={handleEdit}
           />
         );
       });
@@ -84,6 +86,11 @@ function App() {
     });
     setTodoItems(newTodos);
   }
+  //test edit
+  const [isActive, setActive] = useState("false");
+  function handleEdit(clickedTodo) {
+    setActive(!isActive);
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -98,12 +105,15 @@ function App() {
     form.reset();
   }
 
-  function TodoItem({ task, name, onRemove, onToggle }) {
+  function TodoItem({ task, name, onRemove, onToggle, onEdit }) {
     function handleRemove() {
       onRemove(task);
     }
     function handleToggle() {
       onToggle(task);
+    }
+    function handleEdit() {
+      onEdit(task);
     }
     return (
       <li className="liItem">
@@ -114,6 +124,13 @@ function App() {
         <button className="TodoItem__toggle" onClick={handleToggle}>
           {task.status === "pending" ? "done" : "do it "}
         </button>
+        <button className="TodoItem__edit" onClick={handleEdit}>
+          edit
+        </button>
+        <form className={`TodoItem__submitForm ${isActive ? "hidden" : null}`}>
+          <input className="TodoItem__submitInput"></input>
+          <button className="TodoItem__submitButton">save</button>
+        </form>
       </li>
     );
   }
